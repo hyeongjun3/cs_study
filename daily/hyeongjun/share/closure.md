@@ -59,7 +59,7 @@ closures는 유용하다. 왜냐하면 data(the lexical environment)와 function
 
 결과적으로, 너는 하나의 method를 가진 object대신 closure를 어디서든 사용할 수 있다. 
 
-위의 situation은 보통 웹에 있다. event-based인 Javascript front end로 쓰영진 대부분의 코드이다. 너는 몇몇 동작을 선언했고 user가 trigerring하는 event에 붙였다. 코드는 callback으로 attach 된다. 
+위의 situation은 보통 웹에 있다. event-based인 Javascript front end로 쓰여진 대부분의 코드이다. 너는 몇몇 동작을 선언했고 user가 trigerring하는 event에 붙였다. 코드는 callback으로 attach 된다. 
 
 예를 들면, 우리가 text size를 조정하는 버튼을 추가했다고 가정하자. 하나의 방법은 body element의 font-size를 바꾸고 다른 element는 em unit을 사용하는 것이다.
 ```css
@@ -265,11 +265,11 @@ function setupHelp() {
 setupHelp();
 ```
 
-helpText 배열은 각각 input field의 id와 연결되어있는 3개의 helpful hint를 선언한다. loop cycle은 이 선언때문에 발생한다. onfocus event를 hooking up 해서 발생한다.
+helpText 배열은 각각 input field의 id와 연결되어있는 3개의 helpful hint를 선언한다. 루프는 이 정의를 순환하면서 onfocus event를 hooking 하여 help를 보여준다.
 
 위의 코드를 실행하면 예상대로 동작하지 않을 것이다. 어떤 field에 focus on하더라고 message는 age에 대한 것만이 표시될 것이다.
 
-위의 이유는 onfocus를 assign 하는 함수가 closure이기 때문이다. closures는 함수 선언과 setupHelp function scope으로부터 environment를 포함하고 있다. 3개의 closure는 loop에 의해서 만들어지지만 각각은 같은 single lexical enviroment를 포함하고 있다. 왜냐하면 변수 item은 var로 선언되어 hoisting에 의해서 function scope를 가지고 있다. item.help 값은 onfocus callback이 실행될 때 선언된다.
+위의 이유는 onfocus를 assign 하는 함수가 closure이기 때문이다. closures는 함수 선언과 setupHelp function scope으로부터 environment를 포함하고 있다. 3개의 closure는 loop에 의해서 만들어지지만 각각은 같은 single lexical enviroment(item 변수)를 공유하고 있다. 왜냐하면 변수 item은 var로 선언되어 hoisting에 의해서 function scope를 가지고 있다. item.help 값은 onfocus callback이 실행될 때 선언된다.
 
 하나의 해결방법은 아래와 같다.
 ```js
@@ -300,7 +300,7 @@ setupHelp();
 ```
 동작한다. callback이 모든 single lexical environment를 공유하는 것 보다. maeHelpCallback 함수가 각각의 callback에 새로운 lexical environment를 만드는 것이 좋다. 
 
-또다른 방법으로는
+또다른 방법으로는 anonymous closure를 사용하는 것이다.
 ```js
 function showHelp(help) {
   document.getElementById('help').textContent = help;
