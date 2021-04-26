@@ -186,3 +186,70 @@ A) Sale 클래스가 SaleLineItem을 포함하거나 aggregate 하기 때문에 
 관련 패턴 : Abstract Factory, Singleton
 
 ## 2. Information Expert Pattern
+
+object의 responsibility를 누가 가지고 있을 것이냐?
+
+필요한 정보를 가지고 있는 클래스가 object의 responsibility를 가지고 있는다.
+
+### Example
+
+(그림)
+
+누가 총 지불 가격을 알고 있을 것 인가?
+
+ProductDescription 클래스는 가격, SalesLineItem은 갯수를 알고 있다.
+충분한 정보를 가지고 있는 Sale 클래스가 총 지불 가격을 알고 있는 것이 알맞다
+
+### Summary
+장점 : Information encapsulation -> 낮은 Coupling
+
+## 3. Controller Pattern
+누가 UI layer에서 받는 system operation을 제어할 것인가?
+
+root object가 제어(facade controller)와 use case에 따라서(use case or session controller) 결정하는 두가지 방법이 있다.
+
+### Summary
+장점 : GUI에 logic이 없다 -> 컴포넌트를 재사용할 가능성이 크다. 
+
+## 4. Low Coupling Pattern
+side effect를 얼마나 줄일 수 있나?
+
+coupling이 작아지는 responsiblity를 할당한다.
+
+### Example
+Payment instance를 생성해야하고 Sale과 interact 해야한다. 어떤 클래스가 responsibility를 가지고 있는 것이 좋을까?
+
+(그림)
+
+## 5. High Cohesion Pattern
+object가 side effect를 가지지 않고 가독성이 좋고 low coupling을 지원하기 위해서 어떻게 해야하나?
+
+### Example
+이전 예제와 같은 예제이다
+Register 클래스가 많은 역하을 가지고 있는 것은 좋지 못하기 때문에 후자의 다이어그램이 더 선호된다.
+
+## 6. Pure Fabrication Pattern
+high cohesion과 low coupling, 재사용을 위해서 behavior 클래스를 생성하고 reponsibility를 할당한다.
+
+### Example
+Sale instance를 DB에 저장한다고 가정하자
+
+Information Expert에 의해서 Sale 클래스가 위의 responsibility를 가진다면 
+- 많은 DB operation이 필요해지면 Sale 클래스는 low cohesive 된다.
+- reuse가 힘들며 duplication code가 많아진다.
+
+Pure Fabrication에 의하면 위의 responsibility를 가지는 새로운 클래스를 생성하여 위의 문제를 해결할 수 있다.
+
+## 7. Ploymorphism Pattern
+다양한 종류의 behavior가 있을 때 누가 responsibility를 가질 것인가?
+
+polymorphic operation을 사용하여 responsibility를 가질 수 있다.
+
+## 8. Indirection Pattern
+direct coupling을 피하기 위해서 어떻게 responsibilty를 할당하나?
+
+두 object 사이에 새로운 indirection level을 추가하고 polymorphism를 추가한다
+
+## 9. Protected Variations Pattern
+변경이 많은 element에 어떻게 responsibility를 할당할 것인가?
+
