@@ -102,3 +102,29 @@ cache 된 자원을 더 사용하면 웹 사이트는 더 좋은 성능과 repon
 
 [그림]
 
+revved 리소스에 추가된 revision version은 1.1.3 같은 classic한 revision string이 필요하지 않는다. 아무거나 될 수 있다.
+
+## Cache validation
+캐시된 document의 expiration time에 다다르면 validated 되거나 다시 fetch된다. validation은 오직 서버가 strong validator 또는 weak validator를 전달할 떄 일어난다.
+
+Revalidation은 유저가 reload button을 누를 때 트리거된다. 캐시된 response안에 "Cache-Control : must-revalidate" 헤더가 있다면 normal browsing에서도 발생한다. 다른 방법은은 "Advanced->Cache" preference 판넬에 있는 cache validation preference이다. 이것은 강제로 document가 로드될 떄 강제로 validation을 하는 것이다.
+
+### ETags
+ETag response 헤더는 strong validator에 사용되는 *opaque-to-the-useragent* 값이다. 이것은 브라우저 같은 HTTP user-agent가 무낮가 무엇을 표헌하는지 알 필요가 없다는 의미이며 유추할 수 없다. 
+
+## Last-Modified
+"Last-modified" response 헤더는 weak validator에 사용된다. ..
+
+
+## Varying responses
+Vary HTTP response 헤더는 얼마나 미래 request 헤더가 cache된 reponse 또는 request 되어야하는 fresh가 사용되는지 매칭하는지 결정한다.
+
+cache가 Vary 헤더 필드를 가진 request를 받으면 Vary 헤더에 저장된 모든 헤더 필드가 원래 요청과 새 요청에서 모두 일치하지 않는 한 기본적으로 캐시된 응답을 사용하지 않아야한다.
+
+[그림]
+
+이 기능은 일반적으로 리소스를 비 압축 및 (다양한) 압축 형식으로 캐시하고 지원하는 인코딩을 기반으로 사용자 에이전트에 적절하게 제공하는 데 사용된다. 예를 들어 서버는 Vary : Accept-Encoding을 설정하여 특정 인코딩 집합에 대한 지원을 지정하는 모든 요청에 대해 별도의 리소스 버전이 캐시되도록 할 수 있다. Accept-Encoding : gzip, deflate, sdch.
+
+Vary 헤더는 데스크톱 및 모바일 사용자에게 다양한 콘텐츠를 제공하거나 검색 엔진이 페이지의 모바일 버전을 검색 할 수 있도록하는 데 유용 할 수 있습니다 (또한 클로킹이 의도되지 않음을 알려줄 수도 있음). 이는 일반적으로 Vary : User-Agent 헤더를 사용하여 이루어지며 User-Agent 헤더 값이 모바일 및 데스크톱 클라이언트에 대해 다르기 때문에 작동합니다.
+
+### Normalization
