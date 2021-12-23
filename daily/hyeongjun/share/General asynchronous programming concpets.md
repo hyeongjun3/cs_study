@@ -52,3 +52,35 @@ alertBtn.addEventListener('click', () =>
   alert('You clicked me!');
 );
 ```
+
+## Threads
+thread는 기보적으로 프로그램이 complete task를 할 수 있게 해주는 글 프로세스이다. 각각의 프로세스는 한번에 하나의 task를 할 수 있다.
+
+```
+Task A --> Task B --> Task C
+```
+
+각각의 task는 순차적으로 동작한다. 이전 task가 끝나야 다음 task가 실행된다.
+
+우리기 이전에 말한 것 처럼, 많은 컴퓨터는 multiple core를 가지고 있어 많은 것들이 한번에 이루어진다. 프로그래밍 언어는 multiple core가 multipele task를 끝낼 수 있게하는 multiple thread를 지원한다.
+
+```
+Thread 1: Task A --> Task B
+Thread 2: Task C --> Task D
+```
+
+### JavaScript is single-threaded
+JavaScript는 전통적으로 single-thread 입니다. 멀티코어라도 하나의 thread(main thread라고 불립니다.)에 하나의 일만 할 수 있습니다. 위의 예제는 아래처럼 동작합니다.
+
+```
+Main thread: Render circles to canvase --> Display alert()
+```
+
+시간이 지나, JavaScript는 위의 문제를 해결할 수 있는 몇개의 도구를 얻었다. Web workers는 JavaScript processing 중 일부를 별도의 분리된 스레드로 보낼 수 있다. 분리된 스레드는 worker라고 불리면 여러개의 JavaScript chunk를 동시에 실행 할 수 있게한다. 너는 기본적으로 비싼 프로세스를 main thread 대신 worker가 처리하여 user interaction으 block 되지 않게 한다.
+
+```
+Main thread: Task A --> Task C
+Worker thread: Expensive task B
+```
+
+위의 생각으로, [simple-sync-worker.html](https://github.com/mdn/learning-area/blob/main/javascript/asynchronous/introducing/simple-sync-worker.html) 예제를 보자. 위의 경우와 다르게 time을 계산하는 역할을 worker에게 넘겼다. (worker, promise 차이?) 이제 button을 클릭할 때, 브라우저는 date의 계산이 끝나기 전에 paragraph를 보여줄 수 있다. worker가 끝나면 console에 final date를 출력한다.
