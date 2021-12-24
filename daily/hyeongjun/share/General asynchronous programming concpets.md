@@ -1,3 +1,5 @@
+https://developer.mozilla.org/en-US/docs/Learn/JavaScript/Asynchronous/Concepts
+
 ## 비동기?
 보통, 코드는 한번에 하나만 일어나며 straight로 실행된다. 만약 함수가 다른 함수의 결과에 의존한다면, 다른함수가 끝나고 return할 때 까지 기다린다. 끝날 때 까지는 사용자 관점에서는 멈춰있다.
 
@@ -84,3 +86,30 @@ Worker thread: Expensive task B
 ```
 
 위의 생각으로, [simple-sync-worker.html](https://github.com/mdn/learning-area/blob/main/javascript/asynchronous/introducing/simple-sync-worker.html) 예제를 보자. 위의 경우와 다르게 time을 계산하는 역할을 worker에게 넘겼다. (worker, promise 차이?) 이제 button을 클릭할 때, 브라우저는 date의 계산이 끝나기 전에 paragraph를 보여줄 수 있다. worker가 끝나면 console에 final date를 출력한다.
+
+## Asynchronous code
+web worker는 매우 유용하지만 한계를 가지고 있다. 중요한 것은 DOM에 접근하지 못하는 것이다. worker을 이용하여 UI를 업데이트 할 수 없다. 백만개의 파란색 원을 worker에게 넘길 수 없다. 
+
+두번째 문제는 비록 worker가 non block으로 동작해도 여전히 synchronous하다. 이것은 함수가 이전의 다른 프로세스의 결과에 의존할 때 문제가 된다.
+
+```
+Main thread: Task A --> Task B
+```
+
+TaskA가 서버로부터 이미지를 가져오고 Task B가 이미지를 필터한다고 하자. 만약 TaskA를 실행하고 곧바로 Task B를 실행한다면 에러가 발생할 것이다.
+
+```
+  Main thread: Task A --> Task B --> |Task D|
+Worker thread: Task C -----------> |      |
+```
+
+Task D가 TaskB와 TaskC의 결과를 이용한다고 하자. Task B와 Task C의 결과를 동시에 받는다면 괜찮지만 그렇지 않은 경우는 다르다. 
+
+위의 문제를 해결하기 위해서 브라우저는 이 동작들을 비동기적으로 할 수 있게 하였다. Promise같은 feature가 위의 동작을 가릉하게 한다.
+```
+Main thread: Task A                   Task B
+    Promise:      |__async operation__|
+```
+
+Operation은 어느 곳에서든 일어날 수 있기 때문에, main thread는 async operation이 실행되더라도 non blocking 이다.
+
