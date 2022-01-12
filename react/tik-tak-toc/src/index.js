@@ -1,7 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-
 class Square extends React.Component {
     render() {
         return (
@@ -50,22 +49,31 @@ class Game extends React.Component {
         super(props);
         this.state = {
             stepNumber: 0,
-            history: [new Array(9).fill(null)],
+            history: [
+                {
+                    squares: new Array(9).fill(null),
+                    moves: 0,
+                },
+            ],
             nxtPlayer: 'X',
             isFinish: false,
         };
     }
 
     handleClick(i) {
-        const curSquare = this.state.history[this.state.stepNumber].slice();
+        const curSquare =
+            this.state.history[this.state.stepNumber].squares.slice();
         if (curSquare[i] !== null || this.state.isFinish === true) return;
 
         curSquare[i] = this.state.nxtPlayer;
-
+        const newHistory = { squares: curSquare, moves:i };
         let isFinish = false;
         if (calculateWinner(curSquare)) isFinish = true;
         this.setState({
-            history: [...this.state.history.slice(0,this.state.stepNumber+1), curSquare],
+            history: [
+                ...this.state.history.slice(0, this.state.stepNumber + 1),
+                newHistory,
+            ],
             nxtPlayer: this.state.nxtPlayer === 'X' ? 'O' : 'X',
             isFinish: isFinish,
             stepNumber: this.state.stepNumber + 1,
@@ -73,21 +81,20 @@ class Game extends React.Component {
     }
 
     jumpTo(idx) {
-        console.log(idx);
         this.setState({
             stepNumber: idx,
-            nxtPlayer: (idx%2) === 0 ? 'X' : 'O'
-        })
+            nxtPlayer: idx % 2 === 0 ? 'X' : 'O',
+        });
     }
 
     render() {
-        const curSquare = this.state.history[this.state.stepNumber];
-        console.log({curSquare});
+        const curSquare = this.state.history[this.state.stepNumber].squares;
         const moves = this.state.history.map((value, idx) => {
-            const desc = idx === 0 ? `Go to game start` : `Go to move #${idx}`;
+            const {row, col} = num2RowCol(value.moves);
+            const desc = idx === 0 ? `Go to game start` : `Go to move row:${row} col:${col}`;
 
             return (
-                <li key= {idx}>
+                <li key={idx}>
                     <button onClick={() => this.jumpTo(idx)}>{desc}</button>
                 </li>
             );
@@ -143,4 +150,10 @@ function calculateWinner(squares) {
         }
     }
     return null;
+}
+
+function num2RowCol(i) {
+    let ret = { row: Math.floor(i/3), col: i%3 };
+
+    return ret;
 }
