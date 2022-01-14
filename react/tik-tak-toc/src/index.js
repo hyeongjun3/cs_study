@@ -17,6 +17,7 @@ class Board extends React.Component {
     renderSquare(i) {
         return (
             <Square
+                key = {i}
                 value={this.props.squares[i]}
                 isBold={this.props.curSquareIdx === i}
                 onClick={() => this.props.onClick(i)}
@@ -27,7 +28,7 @@ class Board extends React.Component {
     renderSquareLoop() {
         const ret = new Array(3).fill(null).map((_, y) => {
             return (
-                <div className="board-row">
+                <div key={y} className="board-row">
                     {new Array(3).fill(null).map((_, x) => {
                         return this.renderSquare(y*3 + x);
                     })}
@@ -56,6 +57,7 @@ class Game extends React.Component {
             ],
             nxtPlayer: 'X',
             isFinish: false,
+            isDescending: true,
         };
     }
 
@@ -86,9 +88,17 @@ class Game extends React.Component {
         });
     }
 
+    toggleOrder() {
+        this.setState({
+            isDescending : !this.state.isDescending,
+        })
+    }
+
     render() {
-        const curSquare = this.state.history[this.state.stepNumber].squares;
-        const moves = this.state.history.map((value, idx) => {
+        const history = this.state.history;
+        if(this.state.isDescending === false) history.reverse();
+        const curSquare = history[this.state.stepNumber].squares;
+        const moves = history.map((value, idx) => {
             const { row, col } = num2RowCol(value.moves);
             const desc =
                 idx === 0
@@ -115,7 +125,7 @@ class Game extends React.Component {
                     <Board
                         squares={curSquare}
                         curSquareIdx={
-                            this.state.history[this.state.stepNumber].moves
+                            history[this.state.stepNumber].moves
                         }
                         onClick={(i) => this.handleClick(i)}
                     />
@@ -123,6 +133,9 @@ class Game extends React.Component {
                 <div className="game-info">
                     <div>{status}</div>
                     <ol>{moves}</ol>
+                </div>
+                <div>
+                    <button onClick={() => this.toggleOrder()}>toggle order</button>
                 </div>
             </div>
         );
