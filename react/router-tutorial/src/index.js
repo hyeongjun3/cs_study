@@ -4,6 +4,7 @@ import './index.css';
 import App from './App';
 import Expenses from './routes/expenses';
 import Invoices from './routes/invoices';
+import Invoice from './routes/invoice';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
 ReactDOM.render(
@@ -11,7 +12,9 @@ ReactDOM.render(
     <Routes>
       <Route path="/" element={<App/>}>
         <Route path="expenses" element={<Expenses/>}/>
-        <Route path="invoices" element={<Invoices/>}/>
+        <Route path="invoices" element={<Invoices/>}>
+          <Route path=":invoiceId" element={<Invoice></Invoice>}></Route>
+        </Route>
         <Route
           path='*'
           element= {
